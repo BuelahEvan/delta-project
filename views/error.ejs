@@ -1,0 +1,16 @@
+<% layout("layouts/boilerplate.ejs") %>
+
+<%#code copied from bootstrap - alerts%>
+
+
+    <%# col-6 offset-3 means 👉 col-6 → take half the page width
+👉 offset-3 → move a bit to the right (skip 3 spaces)
+
+So together,
+col-6 offset-3 means the box is centered in the middle of the page. %>
+<div class="row">
+ <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+   <div class="alert alert-danger col-6 offset-3" role="alert">
+    <h4 class="alert-heading"><%=message%></h4>
+  </div>
+</div>
