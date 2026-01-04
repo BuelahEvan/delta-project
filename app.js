@@ -79,11 +79,9 @@ passport.deserializeUser(User.deserializeUser());
 
 
 app.use((req, res, next) => {
-    // We explicitly ensure these are arrays so .length always works
-    res.locals.success = req.flash("success") || []; 
-    res.locals.error = req.flash("error") || [];
-    // Ensure currUser is null if not logged in to prevent property access errors
-    res.locals.currUser = req.user || null; 
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    res.locals.currUser = req.user;
     next();
 });
 app.use((req, res, next) => {
