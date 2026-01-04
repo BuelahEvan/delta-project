@@ -46,13 +46,22 @@ app.use(methodOverride("_method"));
 app.engine('ejs',ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
+
+const store = MongoStore.create({
+    mongoUrl: process.env.ATLASDB_URL, // Ensure this env var is set on Render
+    crypto: {
+        secret: process.env.SECRET,
+    },
+    touchAfter: 24 * 3600,
+});
+
 const sessionOptions = {
-    // store, <--- Comment this line out
+    store: store, // <--- UNCOMMENT OR ADD THIS LINE
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
-        expires: Date.now() + 7* 24 * 60 * 60 * 1000,
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
     }
@@ -97,9 +106,7 @@ app.use((err,req,res,next)=>{
     res.status(statusCode).render("error.ejs",{message});
 });
 
-// app.listen(8080,()=>{
-//     console.log("server is listening on port 8080");
-// });
+
 app.listen(port, () => {
     console.log(`server is listening on port ${port}`);
 });
