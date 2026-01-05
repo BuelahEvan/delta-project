@@ -35,8 +35,14 @@ main().then(()=>{
     console.log(err);
 })
 
-async function main(){
-    await mongoose.connect( dbUrl);
+// async function main(){
+//     await mongoose.connect( dbUrl);
+// }
+
+async function main() {
+    console.log("Attempting to connect to Atlas..."); // Add this
+    await mongoose.connect(dbUrl);
+    console.log("Mongoose connection successful!"); // Add this
 }
 
 app.set("view engine","ejs");
@@ -45,6 +51,12 @@ app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
 app.engine('ejs',ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
+
+// async function main() {
+//     console.log("Attempting to connect to Atlas..."); // Add this
+//     await mongoose.connect(dbUrl);
+//     console.log("Mongoose connection successful!"); // Add this
+// }
 
 
 const store = MongoStore.create({
@@ -55,8 +67,12 @@ const store = MongoStore.create({
     touchAfter: 24 * 3600,
 });
 
+store.on("error", (err) => {
+    console.log("ERROR IN MONGO SESSION STORE", err);
+});
+
 const sessionOptions = {
-    store: store, // <--- UNCOMMENT OR ADD THIS LINE
+   store: store, // <--- UNCOMMENT OR ADD THIS LINE
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
@@ -66,6 +82,8 @@ const sessionOptions = {
         httpOnly: true,
     }
 };
+
+
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -89,6 +107,11 @@ app.use((req, res, next) => {
     console.log("Flash Error:", req.flash("error"));
     next();
 });
+
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
+
 
 app.use("/listings",listingRouter);
 

@@ -8,18 +8,26 @@ module.exports.renderSignupForm = (req, res) => {
 
 
 module.exports.signup = async (req, res, next) => {
-    try {
-        // ... registration logic
+      try {
+        let { username, email, password } = req.body;
+        const newUser = new User({ email, username });
+        
+        // This line is where the variable is defined
+        const registeredUser = await User.register(newUser, password); 
+        console.log(registeredUser);
+
+        // Passport's req.login to log them in automatically after signup
         req.login(registeredUser, (err) => {
             if (err) {
-                return next(err); // 'return' stops the function here
+                return next(err);
             }
-            req.flash("success", "Welcome to Wanderlust");
-            return res.redirect("/listings"); // 'return' ensures no other response is sent
+            req.flash("success", "Welcome to Wanderlust!");
+            res.redirect("/listings");
         });
+
     } catch (e) {
         req.flash("error", e.message);
-        return res.redirect("/signup"); 
+        res.redirect("/signup");
     }
 };
 
