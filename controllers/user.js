@@ -10,20 +10,20 @@ module.exports.signup = async (req, res, next) => {
         let { username, email, password } = req.body;
         const newUser = new User({ email, username });
         
-        // 1. Capture the registration result
+        // This line defines the variable that was missing
         const registeredUser = await User.register(newUser, password);
         
-        // 2. Use return to stop execution after login redirect
         req.login(registeredUser, (err) => {
             if (err) {
                 return next(err);
             }
             req.flash("success", "Welcome to Wanderlust!");
-            return res.redirect("/listings"); // <--- Added return
+            // 'return' prevents the ERR_HTTP_HEADERS_SENT error
+            return res.redirect("/listings");
         });
     } catch (e) {
         req.flash("error", e.message);
-        return res.redirect("/signup"); // <--- Added return
+        return res.redirect("/signup");
     }
 };
 
