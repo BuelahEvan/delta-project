@@ -102,11 +102,11 @@ app.use((req, res, next) => {
     res.locals.currUser = req.user;
     next();
 });
-app.use((req, res, next) => {
-    console.log("Flash Success:", req.flash("success"));
-    console.log("Flash Error:", req.flash("error"));
-    next();
-});
+// app.use((req, res, next) => {
+//     console.log("Flash Success:", req.flash("success"));
+//     console.log("Flash Error:", req.flash("error"));
+//     next();
+// });
 
 app.get("/", (req, res) => {
     res.redirect("/listings");
