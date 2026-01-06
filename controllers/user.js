@@ -1,5 +1,3 @@
-
-
 const User = require("../models/user");
 
 module.exports.renderSignupForm = (req, res) => {
@@ -8,26 +6,24 @@ module.exports.renderSignupForm = (req, res) => {
 
 
 module.exports.signup = async (req, res, next) => {
-      try {
+    try {
         let { username, email, password } = req.body;
         const newUser = new User({ email, username });
         
-        // This line is where the variable is defined
-        const registeredUser = await User.register(newUser, password); 
-        console.log(registeredUser);
-
-        // Passport's req.login to log them in automatically after signup
+        // 1. Capture the registration result
+        const registeredUser = await User.register(newUser, password);
+        
+        // 2. Use return to stop execution after login redirect
         req.login(registeredUser, (err) => {
             if (err) {
                 return next(err);
             }
             req.flash("success", "Welcome to Wanderlust!");
-            res.redirect("/listings");
+            return res.redirect("/listings"); // <--- Added return
         });
-
     } catch (e) {
         req.flash("error", e.message);
-        res.redirect("/signup");
+        return res.redirect("/signup"); // <--- Added return
     }
 };
 
