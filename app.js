@@ -11,6 +11,8 @@ const path=require("path");
 const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
 
+
+
 const wrapAsync=require("./utils/wrapAsync.js");
 const ExpressError=require("./utils/ExpressError.js");
 const Review =require("./models/review.js");
@@ -45,12 +47,21 @@ async function main() {
     console.log("Mongoose connection successful!"); // Add this
 }
 
-app.set("view engine","ejs");
-app.set("views",path.join(__dirname,"views"));
-app.use(express.urlencoded({extended:true}));
+// app.set("view engine","ejs");
+// app.set("views",path.join(__dirname,"views"));
+// app.use(express.urlencoded({extended:true}));
+// app.use(methodOverride("_method"));
+// app.engine('ejs',ejsMate);
+// app.use(express.static(path.join(__dirname,"/public")));
+
+// ✅ EJS-MATE MUST COME FIRST
+app.engine("ejs", ejsMate);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.engine('ejs',ejsMate);
-app.use(express.static(path.join(__dirname,"/public")));
+app.use(express.static(path.join(__dirname, "/public")));
 
 // async function main() {
 //     console.log("Attempting to connect to Atlas..."); // Add this
