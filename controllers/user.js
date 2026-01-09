@@ -25,6 +25,8 @@ module.exports.signup = async (req, res, next) => {
         req.flash("error", e.message);
         return res.redirect("/signup");
     }
+    console.log("REQ BODY:", req.body);
+
 };
 
 module.exports.renderLoginForm = (req, res) => {
