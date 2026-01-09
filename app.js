@@ -70,29 +70,52 @@ app.use(express.static(path.join(__dirname, "/public")));
 // }
 
 
+// const store = MongoStore.create({
+//     mongoUrl: process.env.ATLASDB_URL, // Ensure this env var is set on Render
+//     crypto: {
+//         secret: process.env.SECRET,
+//     },
+//     touchAfter: 24 * 3600,
+// });
 const store = MongoStore.create({
-    mongoUrl: process.env.ATLASDB_URL, // Ensure this env var is set on Render
-    crypto: {
-        secret: process.env.SECRET,
-    },
+    mongoUrl: process.env.ATLASDB_URL,
+    // crypto: {
+    //     secret: process.env.SECRET || "devsecret123",
+    // },
     touchAfter: 24 * 3600,
 });
-
-store.on("error", (err) => {
-    console.log("ERROR IN MONGO SESSION STORE", err);
-});
-
 const sessionOptions = {
-   store: store, // <--- UNCOMMENT OR ADD THIS LINE
+    store,
     secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
     }
+    
 };
+
+
+
+store.on("error", (err) => {
+    console.log("ERROR IN MONGO SESSION STORE", err);
+});
+
+
+
+// const sessionOptions = {
+//    store: store, // <--- UNCOMMENT OR ADD THIS LINE
+//     secret: process.env.SECRET,
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+//         maxAge: 7 * 24 * 60 * 60 * 1000,
+//         httpOnly: true,
+//     }
+// };
 
 
 
@@ -133,10 +156,18 @@ app.all("/:path",(req,res,next)=>{  //.all and :path    “For every request to 
     next( new ExpressError(404,"page not found"));//new creates a new error object from the ExpressError class so Express knows what error happened and can show the correct message and status code.
 });
 
-app.use((err,req,res,next)=>{
-    let {statusCode=500,message="something went wrong"}=err
-    res.status(statusCode).render("error.ejs",{message});
+// app.use((err,req,res,next)=>{
+//     let {statusCode=500,message="something went wrong"}=err
+//     res.status(statusCode).render("error.ejs",{message});
+// });
+app.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err);
+    }
+    let { statusCode = 500, message = "something went wrong" } = err;
+    res.status(statusCode).render("error.ejs", { message });
 });
+
 
 
 app.listen(port, () => {
