@@ -21,7 +21,13 @@
             alt="listing_image"/>
 
     <div class="card-body">
-    <p class="card-text">Owned by <i><%= listing.owner.username %></i></p>
+   <% if (listing.owner) { %>
+  <p class="card-text">
+    Owned by <i><%= listing.owner.username %></i>
+  </p>
+<% } else { %>
+  <p class="text-muted">Owner not available</p>
+<% } %>
      
       <br>
        <p class="card-text"><%=listing.description%> </p>
