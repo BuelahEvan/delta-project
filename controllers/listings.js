@@ -56,23 +56,34 @@ module.exports.renderEditForm=async(req,res)=>{
 };
 
 //show route
-module.exports.showListing = async(req,res)=>{
-    let {id}=req.params;
-    // const listing =await  Listing.findById(id).populate("reviews").populate("owner");
-   //will use nested populate
-     const listing =await  Listing.findById(id)
-          .populate({path :"reviews",
-            populate:{
-                path:"author",
-            },
-          }).populate("owner");
-    if(!listing){
-        req.flash("error"," Listing u requested doesn't exist");
-        return res.redirect("/listings");
-    }
-    console.log(listing);
-    res.render("listings/show.ejs",{listing});
- }
+// module.exports.showListing = async(req,res)=>{
+//     let {id}=req.params;
+//     // const listing =await  Listing.findById(id).populate("reviews").populate("owner");
+//    //will use nested populate
+//      const listing =await  Listing.findById(id)
+//           .populate({path :"reviews",
+//             populate:{
+//                 path:"author",
+//             },
+//           }).populate("owner");
+//     if(!listing){
+//         req.flash("error"," Listing u requested doesn't exist");
+//         return res.redirect("/listings");
+//     }
+//     console.log(listing);
+//     res.render("listings/show.ejs",{listing});
+//  }
+
+        module.exports.showListing = async (req, res) => {
+            const { id } = req.params;
+            const listing = await Listing.findById(id);
+
+            res.render("listings/show", { 
+                listing,
+                mapToken: process.env.MAP_TOKEN
+            });
+        };
+
 
 
  //update route
