@@ -6,7 +6,8 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 //index route
 module.exports.index=async(req,res)=>{
-    const allListings=await Listing.find({});
+    // const allListings=await Listing.find({});
+    const allListings = await Listing.find({ owner: { $exists: true, $ne: null } });
     res.render("listings/index.ejs",{allListings});
 };
 
