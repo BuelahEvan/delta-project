@@ -1,6 +1,7 @@
 if(process.env.NODE_ENV !="production"){
     require("dotenv").config();
 }
+
 const port = process.env.PORT || 8080;
 const express=require("express");
 const MongoStore = require('connect-mongo'); 
@@ -11,7 +12,7 @@ const path=require("path");
 const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
 
-
+app.locals.MAP_API_KEY = process.env.MAP_API_KEY;
 
 const wrapAsync=require("./utils/wrapAsync.js");
 const ExpressError=require("./utils/ExpressError.js");
